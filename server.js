@@ -15,6 +15,20 @@ var camera = new RaspiCam({
 })
 camera.start()
 
+//get the list of jpg files in the image dir
+function getImages(imageDir, callback) {
+  var fileType = '.jpg',
+    files = [], i;
+  fs.readdir(imageDir, function (err, list) {
+    for(i=0; i<list.length; i++) {
+      if(path.extname(list[i]) === fileType) {
+        files.push(list[i]); //store the file name into the array files
+      }
+    }
+    callback(err, files);
+  });
+}
+
 var imageDir = '/var/www/camera/images/'
 http.createServer((req, res) => {
   //use the url to parse the requested url and get the image name
