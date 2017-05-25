@@ -7,13 +7,14 @@ const hostname = '0.0.0.0'; // listen on all ports
 const port = 80;
 
 var camera = new RaspiCam({
-  mode: 'photo'
-});
-camera.start();
+  mode: 'photo',
+  output: 'images/snapshot.jpg'
+})
+camera.start()
 
 http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello World\n');
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.end('Hello World  <img src="./snapshot.jpg" />\n');
 }).listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 })
