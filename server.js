@@ -11,7 +11,7 @@ const port = 80;
 
 var camera = new RaspiCam({
   mode: 'photo',
-  output: 'images/snapshot.jpg'
+  output: 'snapshots/snapshot.jpg'
 })
 camera.start()
 
@@ -29,7 +29,7 @@ function getImages(imageDir, callback) {
   });
 }
 
-var imageDir = '/var/www/camera/images/'
+var imageDir = '/var/www/camera/snapshots/'
 http.createServer((req, res) => {
   //use the url to parse the requested url and get the image name
   var query = url.parse(req.url,true).query;
@@ -75,6 +75,9 @@ board.on('ready', () => {
     pin: 1,
     center: true
   });
+  var relay = five.Pin(25);
+  relay.high();
+  /*
   var button = five.Button({
     pin: 25,
     isPullup: true
@@ -89,4 +92,5 @@ board.on('ready', () => {
     }
     toggle = !toggle;
   });
+  */
 });
