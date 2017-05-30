@@ -14,7 +14,9 @@ const servoMax = 180
 
 var camera = new RaspiCam({
   mode: 'photo',
-  output: 'snapshots/snapshot.jpg'
+  output: 'snapshots/snapshot.jpg',
+  timeout: 0,
+  timelapse: 0
 })
 
 //get the list of jpg files in the image dir
@@ -126,11 +128,17 @@ board.on('ready', () => {
     isPullup: true
   })
 
+  camera.on('read', function(err, filename) {
+    //do stuff
+    console.log(`snapshot ${filename} saved...`)
+    camera.stop()
+  });
+
   button3.on('down', function() {
   })
 
-  button2.on('up', function() {
-    console.log('button3 up, taking photo')
+  button3.on('up', function() {
+    console.log('button 3 up, taking photo')
     camera.start()
   })
 
