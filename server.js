@@ -4,7 +4,8 @@ const path = require('path')
 const url = require('url')
 const Raspi = require('raspi-io')
 const five = require('johnny-five')
-const RaspiCam = require('raspicam')
+const spawn = require('child_process').spawn;
+// const RaspiCam = require('raspicam')
 
 const hostname = '0.0.0.0'; // listen on all ports
 const port = 80;
@@ -12,12 +13,14 @@ const port = 80;
 const servoMin = -30
 const servoMax = 180
 
+/*
 var camera = new RaspiCam({
   mode: 'photo',
   output: 'snapshots/snapshot.jpg',
   timeout: 0,
   timelapse: 0
 })
+*/
 
 //get the list of jpg files in the image dir
 function getImages(imageDir, callback) {
@@ -128,18 +131,30 @@ board.on('ready', () => {
     isPullup: true
   })
 
+  /*
   camera.on('read', function(err, filename) {
     //do stuff
     console.log(`snapshot ${filename} saved...`)
     camera.stop()
   });
+  */
+
+  var child
+  const exec = 'raspistill -vf -hf -o snapshots/snapshot.jpg'
 
   button3.on('down', function() {
+    // Always stop running camera task
+    if (child) {
+      child.stdin.pause()
+      child.kill()
+      child = undefined
+    }
   })
 
   button3.on('up', function() {
     console.log('button 3 up, taking photo')
-    camera.start()
+    // camera.start()
+    child = spawn(exec, options)
   })
 
 });
