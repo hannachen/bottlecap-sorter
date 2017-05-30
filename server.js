@@ -71,26 +71,52 @@ const board = new five.Board({
 
 board.on('ready', () => {
   // Create servo on pin 1 (GPIO18) on P1
-  var servo = five.Servo({
+  var servo = new five.Servo({
     pin: 1,
+    range: [-30, 180],
     center: true
   });
-  var relay = five.Pin(25);
-  relay.high();
-  /*
-  var button = five.Button({
+  servo.center();
+
+  var relay = new five.Relay({
+    pin: 22
+  });
+  
+  var button = new five.Button({
     pin: 25,
     isPullup: true
   });
 
+  button.on('up', function() {
+    relay.off();
+    console.log('button up');
+  });
+
+  button.on('down', function() {
+    relay.on();
+    console.log('button down');
+  })
+
+  var button2 = new five.Button({
+    pin: 4,
+    isPullup: true
+  });
+
   var toggle = false;
-  button.on("up", function(value) {
+  button2.on('up', function(value) {
     if (toggle) {
-      servo.to(200);
+      servo.to(180);
+      console.log('to 180');
     } else {
-      servo.to(80);
+      servo.to(-30);
+      console.log('to -30');
     }
     toggle = !toggle;
+    console.log('button2 up');
   });
-  */
+
+  button2.on('down', function() {
+    console.log('button2', toggle);
+  });
+
 });
