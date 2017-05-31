@@ -4,11 +4,11 @@ const path = require('path')
 const url = require('url')
 const Raspi = require('raspi-io')
 const five = require('johnny-five')
-const spawn = require('child_process').spawn;
+const spawn = require('child_process').spawn
 // const RaspiCam = require('raspicam')
 
-const hostname = '0.0.0.0'; // listen on all ports
-const port = 80;
+const hostname = '0.0.0.0' // listen on all ports
+const port = 80
 
 const servoMin = -30
 const servoMax = 180
@@ -25,14 +25,14 @@ var camera = new RaspiCam({
 //get the list of jpg files in the image dir
 function getImages(imageDir, callback) {
   var fileType = '.jpg',
-      files = [], i;
+      files = [], i
   fs.readdir(imageDir, function (err, list) {
     for(i=0; i<list.length; i++) {
       if(path.extname(list[i]) === fileType) {
         files.push(list[i]); //store the file name into the array files
       }
     }
-    callback(err, files);
+    callback(err, files)
   })
 }
 
@@ -139,22 +139,37 @@ board.on('ready', () => {
   });
   */
 
-  var child
-  const exec = 'raspistill -vf -hf -o snapshots/snapshot.jpg'
+  var process
+  const cmd = 'raspistill'
+  const snapshotPath = `${imageDir}snapshot.jpg`
+  const args = ['-t', 1000, '-tl', 0, '-vf', '-hf', '-o', snapshotPath, '-w', 1640, '-h', 1232, '-q', 75]
+
+  function execute(command, options, callback) {
+    exec(command, options, function(error, stdout, stderr) {
+      if (typeof callback === 'function') {
+        callback(stdout)
+      }
+    })
+  }
 
   button3.on('down', function() {
     // Always stop running camera task
-    if (child) {
-      child.stdin.pause()
-      child.kill()
-      child = undefined
+    if (process) {
+      process.stdin.pause()
+      process.kill()
+      process = undefined
     }
   })
 
   button3.on('up', function() {
-    console.log('button 3 up, taking photo')
+    console.log(`button 3 up, taking photo using command ${cmd} ${args.join(' ')}`)
     // camera.start()
-    child = spawn(exec, options)
+    relay.on()
+    process = spawn(cmd, args)
+    process.on('exit', function() {
+      relay.off()
+      console.log(`image saved at ${snapshotPath}`)
+    })
   })
 
 });
