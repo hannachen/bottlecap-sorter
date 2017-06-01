@@ -139,18 +139,13 @@ board.on('ready', () => {
   });
   */
 
+  const googleProjectApi ='AIzaSyDaHMumCUa0FMcHqGpNYDG9ObxUltP_Lvk'
+  const cloudStorageApi = '0522718655b949766a0f092c9438abacc573ce82'
+
   var process
   const cmd = 'raspistill'
   const snapshotPath = `${imageDir}snapshot.jpg`
-  const args = ['-t', 1000, '-tl', 0, '-vf', '-hf', '-o', snapshotPath, '-w', 1640, '-h', 1232, '-q', 75]
-
-  function execute(command, options, callback) {
-    exec(command, options, function(error, stdout, stderr) {
-      if (typeof callback === 'function') {
-        callback(stdout)
-      }
-    })
-  }
+  const args = ['-t', 800, '-tl', 0, '-vf', '-hf', '-o', snapshotPath, '-w', 1640, '-h', 1232, '-q', 75]
 
   button3.on('down', function() {
     // Always stop running camera task
