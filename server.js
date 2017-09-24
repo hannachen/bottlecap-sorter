@@ -6,6 +6,7 @@ const Raspi = require('raspi-io')
 const five = require('johnny-five')
 const spawn = require('child_process').spawn
 // const RaspiCam = require('raspicam')
+const gm = require('gm')
 
 const hostname = '0.0.0.0' // listen on all ports
 const port = 80
@@ -118,7 +119,7 @@ board.on('ready', () => {
       servo.to(servoMax)
       console.log(`Servo to ${servoMax}`)
     }
-    toggle = !toggle;
+    toggle = !toggle
     console.log('button2 up')
   })
 
@@ -169,6 +170,12 @@ board.on('ready', () => {
     process.on('exit', function() {
       relay.off()
       console.log(`image saved at ${snapshotPath}`)
+      gm(snapshotPath)
+        .crop(520, 520, 560, 680)
+	.noProfile()
+	.write(`${imageDir}snapshot-resized.jpg`, function (err) {
+          if (!err) console.log('done')
+	})
     })
   })
 
