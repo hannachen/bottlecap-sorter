@@ -1,24 +1,26 @@
 {
   "name": "pi-camera-test",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "1.0.1",
+  "main": "index.mjs",
   "repository": "git@bitbucket.org:hannachen/pi-camera-test.git",
   "scripts": {
+    "start": "babel-node index.js --presets es2016",
     "crop": "babel-node --presets es2015 crop.js"
   },
   "author": "Hanna",
   "license": "MIT",
   "dependencies": {
-    "gm": "^1.23.0",
     "@google-cloud/storage": "^1.1.1",
     "@google-cloud/vision": "^0.11.2",
+    "express": "^4.15.4",
+    "gm": "^1.23.0",
     "johnny-five": "^0.10.13",
     "raspi-io": "^8.0.1",
     "raspicam": "^0.2.13",
     "sharp": "^0.18.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1"
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2016": "^6.24.1"
   }
 }
