@@ -11,7 +11,7 @@ const baseDir = '/var/www/camera/'
 const imageDir = `${baseDir}snapshots/`
 const snapshotPath = `${imageDir}snapshot.png`
 const snapshotCmd = 'raspistill'
-const snapshotArgs = ['-t', 800, '-tl', 0, '-vf', '-hf', '-o', snapshotPath, '-w', 1640, '-h', 1232, '-q', 75]
+const snapshotArgs = ['-t', 300, '-tl', 0, '-ex', 'sports', '-awb', 'flash', '-vf', '-hf', '-o', snapshotPath, '-w', 1640, '-h', 1232, '-q', 75]
 
 module.exports = class Board {
 
@@ -25,14 +25,24 @@ module.exports = class Board {
     this.initIoEvents = this.initIoEvents.bind(this)
     this.init = this.init.bind(this)
     this.stopRunningProcess = this.stopRunningProcess.bind(this)
+    this.resetServo = this.resetServo.bind(this)
+    this.acceptCap = this.acceptCap.bind(this)
+    this.rejectCap = this.rejectCap.bind(this)
+    this.reset = this.reset.bind(this)
+  }
+
+  resetServo() {
+    setTimeout(this.reset, 500)
   }
 
   acceptCap() {
     this.servo.to(servoMin)
+    this.resetServo()
   }
 
   rejectCap() {
     this.servo.to(servoMax)
+    this.resetServo()
   }
 
   reset() {
@@ -43,9 +53,9 @@ module.exports = class Board {
     this.light.off()
     console.log(`image saved at ${snapshotPath}`)
     gm(snapshotPath)
-      .crop(520, 520, 560, 680)
-      .modulate(250, 150, 100)
-      .contrast(-2)
+      .crop(520, 520, 525, 565) // Crop from bottom right due to flipped snapshot (both h/v)
+      .modulate(110, 150) // brightness/saturation/hue
+      .contrast(-5)
       .noProfile()
       .write(`${snapshotPath}`, this.onSaveImage)
   }
